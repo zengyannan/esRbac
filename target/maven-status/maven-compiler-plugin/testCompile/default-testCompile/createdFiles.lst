@@ -1,0 +1,5 @@
+com\rbac\dao\AuthDaoTest.class
+com\rbac\dao\BaseDaoTest.class
+com\rbac\utils\CommonUtilsTest.class
+com\rbac\dao\RoleDaoTest.class
+com\rbac\dao\AdminDaoTest.class
