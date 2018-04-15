@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rbac.dao.AuthDao">
+
+
+    <resultMap id="AuthResult" type="Auth">
+        <id property="authId" column="auth_id" />
+        <result property="authName" column="auth_name"/>
+        <result property="authPid" column="auth_pid"/>
+        <result property="authC" column="auth_c"/>
+        <result property="authA" column="auth_a"/>
+        <result property="authPath" column="auth_path"/>
+        <result property="authUrl" column="auth_url"/>
+        <result property="authLevel" column="auth_level"/>
+        <result property="authCreatetime" column="auth_createtime"/>
+        <result property="authState" column="auth_state"/>
+        <collection property="children"  ofType="Auth">
+            <id property="authId" column="children_id"/>
+            <result property="authName" column="children_name"/>
+            <result property="authPid" column="children_pid"/>
+            <result property="authC" column="children_c"/>
+            <result property="authA" column="children_a"/>
+            <result property="authPath" column="children_path"/>
+            <result property="authUrl" column="children_url"/>
+            <result property="authLevel" column="children_level"/>
+            <result property="authCreatetime" column="children_createtime"/>
+            <result property="authState" column="children_state"/>
+        </collection>
+    </resultMap>
+
+    <!-- 为dao接口提供方法提供sql语句配置  -->
+
+
+    <select id="queryById" resultMap="AuthResult" parameterType="int">
+        select
+        a.auth_id as auth_id,
+        a.auth_name as auth_name,
+        a.auth_pid as auth_pid,
+        a.auth_c as auth_c,
+        a.auth_a as auth_a,
+        a.auth_path as auth_path,
+        a.auth_url as auth_url,
+        a.auth_level as auth_level,
+        a.auth_createtime as auth_createtime,
+        a.auth_state as auth_state,
+        c.auth_id as children_id,
+        c.auth_name as children_name,
+        c.auth_pid as children_pid,
+        c.auth_c as children_c,
+        c.auth_a as children_a,
+        c.auth_path as children_path,
+        c.auth_url as children_url,
+        c.auth_level as children_level,
+        c.auth_createtime as children_createtime,
+        c.auth_state as children_state
+        from
+        `auth`  a left join `auth` c on a.auth_id=c.auth_pid
+        <where>
+            <if test="authId != null">
+                a.auth_id = #{authId};
+            </if>
+        </where>
+    </select>
+
+    <select id="queryByName" resultMap="AuthResult" parameterType="int">
+        select
+        a.auth_id as auth_id,
+        a.auth_name as auth_name,
+        a.auth_pid as auth_pid,
+        a.auth_c as auth_c,
+        a.auth_a as auth_a,
+        a.auth_path as auth_path,
+        a.auth_url as auth_url,
+        a.auth_level as auth_level,
+        a.auth_createtime as auth_createtime,
+        a.auth_state as auth_state,
+        c.auth_id as children_id,
+        c.auth_name as children_name,
+        c.auth_pid as children_pid,
+        c.auth_c as children_c,
+        c.auth_a as children_a,
+        c.auth_path as children_path,
+        c.auth_url as children_url,
+        c.auth_level as children_level,
+        c.auth_createtime as children_createtime,
+        c.auth_state as children_state
+        from
+        `auth`  a left join `auth` c on a.auth_id=c.auth_pid
+        <where>
+            <if test="authName != null">
+                a.auth_name = #{authName};
+            </if>
+        </where>
+    </select>
+
+
+    <select id="queryAllAuth" resultMap="AuthResult" >
+        select
+        a.auth_id as auth_id,
+        a.auth_name as auth_name,
+        a.auth_pid as auth_pid,
+        a.auth_c as auth_c,
+        a.auth_a as auth_a,
+        a.auth_path as auth_path,
+        a.auth_url as auth_url,
+        a.auth_level as auth_level,
+        a.auth_createtime as auth_createtime,
+        a.auth_state as auth_state,
+        c.auth_id as children_id,
+        c.auth_name as children_name,
+        c.auth_pid as children_pid,
+        c.auth_c as children_c,
+        c.auth_a as children_a,
+        c.auth_path as children_path,
+        c.auth_url as children_url,
+        c.auth_level as children_level,
+        c.auth_createtime as children_createtime,
+        c.auth_state as children_state
+        from
+        `auth`  a left join `auth` c on a.auth_id=c.auth_pid
+        <where>
+            a.auth_state=1
+            <if test="authLevel != null">
+                and a.auth_level <![CDATA[ <= ]]> #{authLevel}
+            </if>
+        </where>
+        order by a.auth_id asc;
+    </select>
+
+    <select id="queryAuthByIn" resultMap="AuthResult" >
+        select
+        a.auth_id as auth_id,
+        a.auth_name as auth_name,
+        a.auth_pid as auth_pid,
+        a.auth_c as auth_c,
+        a.auth_a as auth_a,
+        a.auth_path as auth_path,
+        a.auth_url as auth_url,
+        a.auth_level as auth_level,
+        a.auth_createtime as auth_createtime,
+        a.auth_state as auth_state,
+        c.auth_id as children_id,
+        c.auth_name as children_name,
+        c.auth_pid as children_pid,
+        c.auth_c as children_c,
+        c.auth_a as children_a,
+        c.auth_path as children_path,
+        c.auth_url as children_url,
+        c.auth_level as children_level,
+        c.auth_createtime as children_createtime,
+        c.auth_state as children_state
+        from
+        `auth`  a left join `auth` c on a.auth_id=c.auth_pid
+        <where>
+            a.auth_state=1
+            <if test="authIds != null">
+                and a.auth_id in
+                <foreach item="item" index="index" collection="authIds" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="authLevel !=null">
+                and a.auth_level <![CDATA[ <= ]]> #{authLevel}
+            </if>
+        </where>
+        order by auth_createtime asc
+    </select>
+
+
+
+
+    <select id="queryAll" resultMap="AuthResult">
+        select
+        auth_id,
+        auth_name,
+        auth_pid,
+        auth_c,
+        auth_a,
+        auth_path,
+        auth_url,
+        auth_level,
+        auth_createtime,
+        auth_state
+        from
+        `auth`
+        order by auth_createtime asc
+        limit #{offset},#{limit}
+    </select>
+
+
+    <insert id="insertAuth"  keyProperty="auth.authId" parameterType="Auth" useGeneratedKeys="true">
+        insert
+        into `auth`(
+        auth_name,
+        auth_pid,
+        auth_c,
+        auth_a,
+        auth_url,
+        auth_level,
+        auth_createtime,
+        auth_state)
+        values(
+        #{auth.authName},
+        #{auth.authPid},
+        #{auth.authC},
+        #{auth.authA},
+        #{auth.authUrl},
+        #{auth.authLevel},
+        #{auth.authCreatetime},
+        #{auth.authState}
+        );
+    </insert>
+
+    <update id="updateAuthPath">
+        update `auth` set auth_path=#{authPath}
+        <where>
+        <if test="authId != null">
+            auth_id=#{authId};
+        </if>
+        </where>
+    </update>
+
+    <update id="updateAuth" parameterType="Auth">
+        update
+        `auth`
+        set
+        auth_name=#{auth.authName},
+        auth_pid=#{auth.authPid},
+        auth_c=#{auth.authC},
+        auth_a=#{auth.authA},
+        auth_path=#{auth.authPath},
+        auth_url=#{auth.authUrl},
+        auth_level=#{auth.authLevel}
+        <where>
+        <if test="auth.authId != null">
+            auth_id=#{auth.authId};
+        </if>
+        </where>
+    </update>
+
+    <update id="updateState">
+        update `auth` set auth_state=#{authState}
+        <where>
+            <if test="authId != null">
+                auth_id=#{authId};
+            </if>
+        </where>
+    </update>
+
+    <delete id="deleteAuth">
+        delete from `auth`
+        <where>
+            <if test="authId != null">
+                auth_id=#{authId};
+            </if>
+        </where>
+    </delete>
+
+    <select id="getTotalCount" resultType="java.lang.Long">
+        select
+        count(auth_id)
+        from
+        `auth`
+    </select>
+</mapper>
